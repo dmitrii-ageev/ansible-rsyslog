@@ -1,0 +1,30 @@
+---
+- name: Create the system environment file
+  template:
+    src: "{{ rsyslog__service }}.environment.file.j2"
+    dest: "{{ rsyslog__environment_file }}"
+    mode: "{{ rsyslog__file_mode }}"
+  notify: Restart rsyslog service
+
+- name: Check if an init script exists
+  stat:
+    path: "{{ rsyslog__system_init_file }}"
+  register: rsyslog__init_file
+
+- name: Check if an unit file exists
+  stat:
+    path: "{{ rsyslog__vendor_unit_file }}"
+  register: rsyslog__unit_file
+
+- name: Install systemd unit file if required
+  template:
+    src: "{{ rsyslog__service }}.unit.file.j2"
+    dest: "{{ rsyslog__system_unit_file }}"
+    mode: "{{ rsyslog__file_mode }}"
+  notify:
+    - Systemd daemon reload
+    - Restart rsyslog service
+  when:
+    - rsyslog__init_file.stat.exists == False
+    - rsyslog__unit_file.stat.exists == False
+...
