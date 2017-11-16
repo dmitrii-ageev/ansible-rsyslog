@@ -6,17 +6,32 @@ matrix:
   include:
     - os: linux
       dist: xenial
+      env: ANSIBLE_VERSION=latest
     - os: linux
       dist: jessie
+      env: ANSIBLE_VERSION=latest
     - os: linux
       dist: stretch
+      env: ANSIBLE_VERSION=latest
     - os: linux
       os_type: centos
       os_version: 7
+      env: ANSIBLE_VERSION=latest
+    - os: linux
+      dist: xenial
+      env: ANSIBLE_VERSION=2.4.0.0
+    - os: linux
+      dist: jessie
+      env: ANSIBLE_VERSION=2.4.0.0
+    - os: linux
+      dist: stretch
+      env: ANSIBLE_VERSION=2.4.0.0
+    - os: linux
+      os_type: centos
+      os_version: 7
+      env: ANSIBLE_VERSION=2.4.0.0
 
-env:
-  - ANSIBLE_VERSION=2.4.0.0
-  - ANSIBLE_VERSION=latest
+
 
 before_install:
   - sudo apt-get update -qq
