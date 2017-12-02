@@ -1,59 +1,63 @@
 ---
+dist: xenial
 language: python
 python: "2.7"
 
 matrix:
   include:
-    - os: linux
-      dist: xenial
-    - os: linux
-      dist: stretch
-    - os: linux
-      os_type: centos
-      os_version: 7
+  - os: linux
+    dist: xenial
+    sudo: required
+  - os: linux
+    dist: stretch
+    sudo: required
+  - os: linux
+    os_type: centos
+    os_version: 7
+    sudo: required
 
 env:
-  - ANSIBLE_VERSION=2.4.0.0
-  - ANSIBLE_VERSION=latest
+- ANSIBLE_VERSION=2.4.0.0
+- ANSIBLE_VERSION=latest
 
 before_install:
-  - sudo apt-get update -qq
+- sudo apt-get update -qq
 
 
 install:
-  # Install ansible
-  - if [ "$ANSIBLE_VERSION" == "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
- 
-  # Check ansible version
-  - ansible --version
+# Install ansible
+- if [ "$ANSIBLE_VERSION" == "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
 
-  # Install ansible-lint
-  - pip install ansible-lint
+# Check ansible version
+- ansible --version
 
-  # Install ansible-review
-  - pip install ansible-review
+# Install ansible-lint
+- pip install ansible-lint
 
-  # Create ansible.cfg with correct roles_path
-  - printf '[defaults]\nroles_path = ../' > ansible.cfg
+# Install ansible-review
+- pip install ansible-review
+
+# Create ansible.cfg with correct roles_path
+- printf '[defaults]\nroles_path = ../' > ansible.cfg
 
 script:
-  # Download depended roles
-  - if [ -f tests/requirements.yml ]; then ansible-galaxy install -r tests/requirements.yml; fi
+# Download depended roles
+- if [ -f tests/requirements.yml ]; then ansible-galaxy install -r tests/requirements.yml; fi
 
-  # Basic role syntax check
-  - ansible-lint tests/test.yml
-  - ansible-review tests/test.yml
-  - ansible-playbook -i tests/inventory --syntax-check tests/test.yml
+# Basic role syntax check
+- ansible-lint tests/test.yml
+- ansible-review tests/test.yml
+- ansible-playbook -i tests/inventory --syntax-check tests/test.yml
 
-  # Run the role/playbook with ansible-playbook
-  - ansible-playbook -i tests/inventory --connection=local --become -vvvv tests/test.yml
+# Run the role/playbook with ansible-playbook
+- ansible-playbook -i tests/inventory --connection=local --become -vvvv tests/test.yml
 
-  # Run the role/playbook again, checking to make sure it's idempotent
-  - >
-    ansible-playbook -i tests/inventory --connection=local --become -vvvv tests/test.yml 
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
+# Run the role/playbook again, checking to make sure it's idempotent
+- >
+  ansible-playbook -i tests/inventory --connection=local --become -vvvv tests/test.yml
+  | grep -q 'changed=0.*failed=0'
+  && (echo 'Idempotence test: pass' && exit 0)
+  || (echo 'Idempotence test: fail' && exit 1)
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
