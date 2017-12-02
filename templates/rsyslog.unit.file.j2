@@ -7,7 +7,7 @@
 #
 [Unit]
 Description={{ rsyslog__description }}
-{{ 'Requires=syslog.socket' if ansible_os_family == 'Debian' else ';Requires=syslog.socket' }}
+{{ 'Requires=syslog.socket' if ansible_os_family == 'Debian' else '' }}
 Documentation=man:rsyslogd(8)
 Documentation=http://www.rsyslog.com/doc/
 
