@@ -10,7 +10,5 @@
     path: "{{ item }}"
     state: absent
   with_items: "{{ rsyslog__directories }}"
-  when:
-    - rsyslog__directories is defined
-    - rsyslog__directories != []
+  when: rsyslog__directories is defined
 ...

@@ -1,5 +1,4 @@
 ---
-# Please note: I used not the best construction in the conditional below, I'll try to find a better way to do it later.
 - name: Check if we support the OS distribution
   fail:
     msg: "The {{ ansible_distribution }} operating system is not supported!"
@@ -9,43 +8,27 @@
   fail:
     msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
   when:
-    - ansible_distribution == "RedHat"
-    - not ansible_distribution_major_version|int in rsyslog__packages.RedHat
+  - ansible_distribution == "RedHat"
+  - not ansible_distribution_major_version|int in rsyslog__packages.RedHat
 
 - name: Check if we support the CentOS version
   fail:
     msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
   when:
-    - ansible_distribution == "CentOS"
-    - not ansible_distribution_major_version|int in rsyslog__packages.CentOS
+  - ansible_distribution == "CentOS"
+  - not ansible_distribution_major_version|int in rsyslog__packages.CentOS
 
 - name: Check if we support the Debian version
   fail:
     msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
   when:
-    - ansible_distribution == "Debian"
-    - not ansible_distribution_major_version|int in rsyslog__packages.Debian
+  - ansible_distribution == "Debian"
+  - not ansible_distribution_major_version|int in rsyslog__packages.Debian
 
 - name: Check if we support the Ubuntu version
   fail:
     msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
   when:
-    - ansible_distribution == "Ubuntu"
-    - not ansible_distribution_major_version|int in rsyslog__packages.Ubuntu
-
-- name: Check what kind of service manager is available
-  stat:
-    path: '/proc/1/exe'
-  register: rsyslog__service_manager_stat
-
-- name: Set service manager to systemd
-  set_fact:
-    rsyslog__service_manager: 'systemd'
-  when: "'systemd' in rsyslog__service_manager_stat.stat.lnk_source"
-
-- name: Set service name
-  set_fact:
-    rsyslog__service_name: "{{ rsyslog__service }}d"
-  when:
-    - "not 'systemd' in rsyslog__service_manager_stat.stat.lnk_source"
-    - ansible_distribution_family == "RedHat"
+  - ansible_distribution == "Ubuntu"
+  - not ansible_distribution_major_version|int in rsyslog__packages.Ubuntu
+...

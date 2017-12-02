@@ -1,24 +1,4 @@
 ---
-- name: Add required repositories for Debian-based systems
-  apt_repository:
-    repo: "{{ item }}"
-    state: present
-    update_cache: yes
-  when:
-    - ansible_os_family == "Debian"
-    - item is defined
-  with_items: "{{ rsyslog__packages[ansible_distribution][ansible_distribution_major_version|int]['repositories'] }}"
-
-- name: Add required repositories for RedHat-based systems
-  yum:
-    name: "{{ item }}"
-    state: present
-    update_cache: yes
-  when:
-    - ansible_os_family == "RedHat"
-    - item is defined
-  with_items: "{{ rsyslog__packages[ansible_distribution][ansible_distribution_major_version|int]['repositories'] }}"
-
 - name: Install required packages
   package:
     name: "{{ item }}"
@@ -42,8 +22,6 @@
     owner: "{{ rsyslog__user }}"
     group: "{{ rsyslog__group }}"
     mode: "{{ rsyslog__dir_mode }}"
+  when: item is defined
   with_items: "{{ rsyslog__directories }}"
-  when:
-    - rsyslog__directories is defined
-    - rsyslog__directories != []
 ...

@@ -6,9 +6,7 @@
     owner: "{{ rsyslog__user }}"
     group: "{{ rsyslog__group }}"
     mode: "{{ rsyslog__file_mode }}"
-  when:
-    - rsyslog__conf_file is defined
-    - rsyslog__conf_file != ''
+  when: rsyslog__conf_file is defined
   notify: Restart rsyslog service
 
 - name: Create dynamic configuration files
@@ -16,5 +14,6 @@
     src: rsyslog.d.j2
     dest: "{{ rsyslog__dynamic_conf_dir }}/{{ item.file }}"
     mode: "{{ rsyslog__file_mode }}"
+  when: item is defined
   with_items: "{{ rsyslog__dynamic_config }}"
 ...
