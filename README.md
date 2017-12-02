@@ -8,6 +8,11 @@ Requirements
 
 This role requires root access.
 
+Dependencies
+------------
+
+None.
+
 Role Variables
 --------------
 
@@ -22,14 +27,11 @@ Key-value pairs:
 rsyslog__config: A list of dictionaries. Defines rsyslog configuration files and their options.
 Key-value pairs:
  * name    - The name of the file that goes into /etc/rsyslog.d/.
- * config  - Array of configuration sections.
-   - comment  - Description for a particular section.
-     options  - Directives for rsyslog, view the rsyslog man page for specifics.
+ * config  - Array of configuration sections (refer to the section structure below).
 
-Dependencies
-------------
-
-None.
+The configuration section structure:
+ * comment  - Description for a particular section.
+ * options  - Directives for rsyslog, view the rsyslog man page for specifics.
 
 Example Playbook
 ----------------
