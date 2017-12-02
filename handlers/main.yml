@@ -29,6 +29,6 @@
     state: reloaded
     enabled: yes
   when:
-    - rsyslog__service_started is undefined
-    - rsyslog__service_restarted is undefined
+  - rsyslog__service_started is undefined
+  - rsyslog__service_restarted is undefined
 ...
