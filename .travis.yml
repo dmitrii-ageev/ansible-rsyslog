@@ -1,28 +1,21 @@
 ---
-dist: xenial
 language: python
 python: "2.7"
 
-matrix:
-  include:
-  - os: linux
-    dist: xenial
-    sudo: required
-  - os: linux
-    dist: stretch
-    sudo: required
-  - os: linux
-    os_type: centos
-    os_version: 7
-    sudo: required
-
 env:
-- ANSIBLE_VERSION=2.4.0.0
-- ANSIBLE_VERSION=latest
+- IMAGE=ubuntu/xenial ANSIBLE_VERSION=2.4.0.0
+- IMAGE=ubuntu/xenial ANSIBLE_VERSION=latest
 
 before_install:
-- sudo apt-get update -qq
-
+- sudo apt install software-properties-common -y
+- sudo apt-add-repository ppa:ubuntu-lxc/lxd-stable -y
+- sudo apt update -y
+- sudo apt dist-upgrade -y
+- sudo apt install lxd lxd-client -y
+- sudo lxd init --auto
+- sudo usermod -a -G lxd travis
+- sudo su travis -c 'lxc network create lxdbr0'
+- sudo su travis -c 'lxc network attach-profile lxdbr0 default eth0'
 
 install:
 # Install ansible
