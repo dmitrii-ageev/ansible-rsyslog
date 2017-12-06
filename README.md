@@ -38,10 +38,10 @@ Example Playbook
 
 ```
 #
-# myplay.yml
+# example.yml
 #
 - name: Change rsyslog settings
-  hosts: myhost.domain.net
+  hosts: host.domain.net
   become: yes
 
   roles:
