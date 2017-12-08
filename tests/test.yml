@@ -28,8 +28,9 @@
           *.emerg                         *
       - comment: "Logging to the console."
         options: |-
-          daemon.*;mail.*;\
-                  news.err;\
-                  *.=debug;*.=info;\
-                  *.=notice;*.=warn       |/dev/console
+          daemon.*;\
+          mail.*;\
+          news.err;\
+          *.=debug;*.=info;\
+          *.=notice;*.=warn       |/dev/console
 ...
