@@ -36,11 +36,10 @@
     - pip install ansible-review
 
     # Create ansible.cfg with correct roles_path
-    - >
-      echo '[defaults]'        > ansible.cfg;
-      echo 'roles_path = ../' >> ansible.cfg;
-      echo '[ssh_connection]' >> ansible.cfg'
-      echo 'ssh_args = -o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=10m' >> ansible.cfg
+    - echo '[defaults]'        > ansible.cfg
+    - echo 'roles_path = ../' >> ansible.cfg
+    - echo '[ssh_connection]' >> ansible.cfg
+    - echo 'ssh_args = -o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=10m' >> ansible.cfg
     - cat ansible.cfg
 
   before_script:
@@ -82,9 +81,11 @@
           echo 'ERROR: IMAGE variable is not defined!'
           exit -1
       fi
-    - cat tests/inventory
 
   script:
+    # Display contents of the inventory file
+    - cat tests/inventory
+
     # Re-create variable
     - export CONTAINER_NAME=lxc${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
 
