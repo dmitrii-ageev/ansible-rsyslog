@@ -46,15 +46,16 @@
     # Create a LXD container
     - >
       if [ ! -z ${IMAGE} ]; then
-          export CONTAINER_NAME=${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
+          export CONTAINER_NAME=lxc${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
           sudo su travis -c "lxc launch ${IMAGE} ${CONTAINER_NAME}";
 
           # Wait for 10 seconds until DHCP assigns for IP address
           sleep 10
 
-          # Get the container IPv4 address
+          # Display information about existing containers
           sudo su travis -c "lxc list"
-          sudo su travis -c "lxc list ${CONTAINER_NAME}" | grep "${CONTAINER_NAME}" | cut -d '|' -f 4 |  cut -d ' ' -f2
+
+          # Get the container IPv4 address
           export CONTAINER_ADDRESS=$(sudo su travis -c "lxc list ${CONTAINER_NAME}" | grep ${CONTAINER_NAME} | cut -d "|" -f 4 |  cut -d " " -f2)
 
           # Check if IPv4 address was founded
