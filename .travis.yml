@@ -38,6 +38,7 @@
     # Create ansible.cfg with correct roles_path
     - echo '[defaults]'        > ansible.cfg
     - echo 'roles_path = ../' >> ansible.cfg
+    - echo 'host_key_checking = False' >> ansible.cfg
     - echo '[ssh_connection]' >> ansible.cfg
     - echo 'ssh_args = -o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=10m' >> ansible.cfg
     - cat ansible.cfg
