@@ -12,8 +12,9 @@
     - sudo apt-add-repository ppa:ubuntu-lxc/lxd-stable -y
     - sudo apt update -y
     - sudo apt install lxd lxd-client -y
+    - sudo apt-get install --only-upgrade lxd lxd-client -y
     - sudo lxd init --auto
-    - sudo usermod -a -G lxd travis
+    - sudo gpasswd -a travis lxd
     - sudo su travis -c 'lxc network create lxdbr0'
     - sudo su travis -c 'lxc network attach-profile lxdbr0 default eth0'
   
