@@ -67,6 +67,9 @@
             echo ${CONTAINER_ADDRESS} >> tests/inventory
           fi
 
+          # Install openssh-server in the container
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install openssh-server -y" || exit -1
+
           # Make ssh keys directory inside the container
           sudo su travis -c "lxc exec ${CONTAINER_NAME} -- mkdir -p -m 700 /root/.ssh" || exit -1
 
