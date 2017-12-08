@@ -86,9 +86,6 @@
     # Display contents of the inventory file
     - cat tests/inventory
 
-    # Re-create variable
-    - export CONTAINER_NAME=lxc${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
-
     # Download depended roles
     - if [ -f tests/requirements.yml ]; then ansible-galaxy install -r tests/requirements.yml; fi
 
@@ -98,11 +95,11 @@
     - ansible-playbook -i tests/inventory --syntax-check tests/test.yml
 
     # Run the role/playbook with ansible-playbook
-    - ansible-playbook -i tests/inventory --become -vvvv -u root -l ${CONTAINER_NAME} tests/test.yml
+    - ansible-playbook -i tests/inventory --become -vvvv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
 
     # Run the role/playbook again, checking to make sure it's idempotent
     - >
-      ansible-playbook -i tests/inventory --become -vvvv -u root -l ${CONTAINER_NAME} tests/test.yml
+      ansible-playbook -i tests/inventory --become -vvvv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
       | grep -q 'changed=0.*failed=0'
       && (echo 'Idempotence test: pass' && exit 0)
       || (echo 'Idempotence test: fail' && exit 1)
