@@ -41,7 +41,8 @@
     
   before_script:
     # Create a LXD container
-    - if [ ! -z ${IMAGE} ]; then
+    - >
+      if [ ! -z ${IMAGE} ]; then
           export CONTAINER_NAME=${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
           sudo su travis -c 'lxc launch ${IMAGE} ${CONTAINER_NAME}';
     
@@ -74,6 +75,7 @@
           echo 'ERROR: IMAGE variable is not defined!'
           exit -1
       fi
+
   script:
     # Download depended roles
     - if [ -f tests/requirements.yml ]; then ansible-galaxy install -r tests/requirements.yml; fi
@@ -95,9 +97,7 @@
     
   after_script:
     # Delete the LXD container
-    - if [ ! -z ${IMAGE} ]; then
-          sudo su travis -c 'lxc delete --force ${IMAGE} ${CONTAINER_NAME}';
-      fi
+    - if [ ! -z ${IMAGE} ]; then sudo su travis -c 'lxc delete --force ${IMAGE} ${CONTAINER_NAME}'; fi
   
   notifications:
     webhooks: https://galaxy.ansible.com/api/v1/notifications/
