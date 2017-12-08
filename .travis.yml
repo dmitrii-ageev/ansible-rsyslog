@@ -15,6 +15,7 @@
     - sudo apt-get install --only-upgrade lxd lxd-client -y
     - sudo lxd init --auto
     - sudo gpasswd -a travis lxd
+    - newgrp lxd
     - sudo su travis -c 'lxc network create lxdbr0'
     - sudo su travis -c 'lxc network attach-profile lxdbr0 default eth0'
   
