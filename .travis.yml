@@ -7,7 +7,7 @@
     - IMAGE=ubuntu/xenial ANSIBLE_VERSION=latest
   
   before_install:
-    - ssh -f ~/.ssh/id_rsa -P ''
+    - ssh-keygen -f ~/.ssh/id_rsa -P ''
     - sudo apt install software-properties-common -y
     - sudo apt-add-repository ppa:ubuntu-lxc/lxd-stable -y
     - sudo apt update -y
