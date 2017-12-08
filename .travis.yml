@@ -11,7 +11,6 @@
     - sudo apt install software-properties-common -y
     - sudo apt-add-repository ppa:ubuntu-lxc/lxd-stable -y
     - sudo apt update -y
-    - sudo apt dist-upgrade -y
     - sudo apt install lxd lxd-client -y
     - sudo lxd init --auto
     - sudo usermod -a -G lxd travis
