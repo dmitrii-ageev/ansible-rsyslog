@@ -38,9 +38,11 @@
     # Create ansible.cfg with correct roles_path
     - >
       echo '[defaults]'        > ansible.cfg
-      echo 'roles_path = ../' >> ansible.cfg
+      echo 'roles_path = ../..' >> ansible.cfg
       echo '[ssh_connection]' >> ansible.cfg
       echo 'ssh_args = -o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=10m' >> ansible.cfg
+      echo 'Inventory file:'
+      cat ansible.cfg
 
   before_script:
     # Create a LXD container
@@ -83,6 +85,9 @@
       fi
 
   script:
+    # Re-create variable
+    - export CONTAINER_NAME=lxc${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
+
     # Download depended roles
     - if [ -f tests/requirements.yml ]; then ansible-galaxy install -r tests/requirements.yml; fi
 
