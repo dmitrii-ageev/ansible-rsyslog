@@ -52,6 +52,10 @@
           # Wait for 10 seconds until DHCP assigns for IP address
           sleep 10
 
+          # Get a list of containers and additional debug info
+          echo sudo su travis -c 'lxc list'
+          echo sudo su travis -c 'lxc list ${CONTAINER_NAME}'
+
           # Get the container IPv4 address
           export CONTAINER_ADDRESS=$(sudo su travis -c 'lxc list ${CONTAINER_NAME}' | grep ${CONTAINER_NAME} | cut -d "|" -f 4 |  cut -d " " -f2)
 
