@@ -47,7 +47,7 @@
     - >
       if [ ! -z ${IMAGE} ]; then
           export CONTAINER_NAME=lxc${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
-          sudo su travis -c "lxc launch ${IMAGE} ${CONTAINER_NAME}";
+          sudo su travis -c "lxc launch images:${IMAGE} ${CONTAINER_NAME}";
 
           # Wait for 10 seconds until DHCP assigns for IP address
           sleep 10
