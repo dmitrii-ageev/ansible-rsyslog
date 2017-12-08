@@ -53,10 +53,12 @@
           sleep 10
 
           # Get the container IPv4 address
+          sudo su travis -c "lxc list"
+          sudo su travis -c "lxc list ${CONTAINER_NAME}" | grep "${CONTAINER_NAME}" | cut -d '|' -f 4 |  cut -d ' ' -f2
           export CONTAINER_ADDRESS=$(sudo su travis -c "lxc list ${CONTAINER_NAME}" | grep ${CONTAINER_NAME} | cut -d "|" -f 4 |  cut -d " " -f2)
 
           # Check if IPv4 address was founded
-          if [ -z "$CONTAINER_ADDRESS" ]; then
+          if [ -z ${CONTAINER_ADDRESS} ]; then
             echo "Can't locate container's IP address"
             exit -1
           else
