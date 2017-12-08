@@ -1,104 +1,104 @@
 ---
-language: python
-python: "2.7"
-
-env:
-- IMAGE=ubuntu/xenial ANSIBLE_VERSION=2.4.0.0
-- IMAGE=ubuntu/xenial ANSIBLE_VERSION=latest
-
-before_install:
-- mkdir -m 700 ~/.ssh
-- ssh -f ~/.ssh/id_rsa -P ''
-- sudo apt install software-properties-common -y
-- sudo apt-add-repository ppa:ubuntu-lxc/lxd-stable -y
-- sudo apt update -y
-- sudo apt dist-upgrade -y
-- sudo apt install lxd lxd-client -y
-- sudo lxd init --auto
-- sudo usermod -a -G lxd travis
-- sudo su travis -c 'lxc network create lxdbr0'
-- sudo su travis -c 'lxc network attach-profile lxdbr0 default eth0'
-
-install:
-# Install ansible
-- if [ "$ANSIBLE_VERSION" == "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
-
-# Check ansible version
-- ansible --version
-
-# Install ansible-lint
-- pip install ansible-lint
-
-# Install ansible-review
-- pip install ansible-review
-
-# Create ansible.cfg with correct roles_path
-- >
-  echo '[defaults]'        > ansible.cfg
-  echo 'roles_path = ../' >> ansible.cfg
-  echo '[ssh_connection]' >> ansible.cfg
-  echo 'ssh_args = -o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=10m' >> ansible.cfg
-
-before_script:
-# Create a LXD container
-- if [ ! -z ${IMAGE} ]; then
-      export CONTAINER_NAME=${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
-      sudo su travis -c 'lxc launch ${IMAGE} ${CONTAINER_NAME}';
-
-      # Wait for 10 seconds until DHCP assigns for IP address
-      sleep 10
-
-      # Get the container IPv4 address
-      export CONTAINER_ADDRESS=$(lxc list ${CONTAINER_NAME} | grep ${CONTAINER_NAME} | cut -d "|" -f 4 |  cut -d " " -f2)
-
-      # Check if IPv4 address was founded
-      if [ -z "$CONTAINER_ADDRESS" ]; then
-        echo "Can't locate container's IP address"
-        exit -1
+  language: python
+  python: "2.7"
+  
+  env:
+    - IMAGE=ubuntu/xenial ANSIBLE_VERSION=2.4.0.0
+    - IMAGE=ubuntu/xenial ANSIBLE_VERSION=latest
+  
+  before_install:
+    - mkdir -m 700 ~/.ssh
+    - ssh -f ~/.ssh/id_rsa -P ''
+    - sudo apt install software-properties-common -y
+    - sudo apt-add-repository ppa:ubuntu-lxc/lxd-stable -y
+    - sudo apt update -y
+    - sudo apt dist-upgrade -y
+    - sudo apt install lxd lxd-client -y
+    - sudo lxd init --auto
+    - sudo usermod -a -G lxd travis
+    - sudo su travis -c 'lxc network create lxdbr0'
+    - sudo su travis -c 'lxc network attach-profile lxdbr0 default eth0'
+  
+  install:
+    # Install ansible
+    - if [ "$ANSIBLE_VERSION" == "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
+    
+    # Check ansible version
+    - ansible --version
+    
+    # Install ansible-lint
+    - pip install ansible-lint
+    
+    # Install ansible-review
+    - pip install ansible-review
+    
+    # Create ansible.cfg with correct roles_path
+    - >
+      echo '[defaults]'        > ansible.cfg
+      echo 'roles_path = ../' >> ansible.cfg
+      echo '[ssh_connection]' >> ansible.cfg
+      echo 'ssh_args = -o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=10m' >> ansible.cfg
+    
+  before_script:
+    # Create a LXD container
+    - if [ ! -z ${IMAGE} ]; then
+          export CONTAINER_NAME=${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
+          sudo su travis -c 'lxc launch ${IMAGE} ${CONTAINER_NAME}';
+    
+          # Wait for 10 seconds until DHCP assigns for IP address
+          sleep 10
+    
+          # Get the container IPv4 address
+          export CONTAINER_ADDRESS=$(lxc list ${CONTAINER_NAME} | grep ${CONTAINER_NAME} | cut -d "|" -f 4 |  cut -d " " -f2)
+    
+          # Check if IPv4 address was founded
+          if [ -z "$CONTAINER_ADDRESS" ]; then
+            echo "Can't locate container's IP address"
+            exit -1
+          else
+            # Add the container's IP address to the inventory file
+            echo ${CONTAINER_ADDRESS} >> tests/inventory
+          fi
+    
+          # Make ssh keys directory inside the container
+          lxc exec ${CONTAINER_NAME} -- mkdir -p -m 700 /root/.ssh || exit -1
+    
+          # Copy ssh public key to the container
+          cat ~/.ssh/id_rsa.pub | lxc exec ${CONTAINER_NAME} -- dd of=/root/.ssh/authorized_keys
+    
+          # Set correct permissions on the authorized_keys file
+          lxc exec ${CONTAINER_NAME} -- chmod 600 /root/.ssh/authorized_keys || exit -1
+    
       else
-        # Add the container's IP address to the inventory file
-        echo ${CONTAINER_ADDRESS} >> tests/inventory
+          # There is no IMAGE defined
+          echo 'ERROR: IMAGE variable is not defined!'
+          exit -1
       fi
-
-      # Make ssh keys directory inside the container
-      lxc exec ${CONTAINER_NAME} -- mkdir -p -m 700 /root/.ssh || exit -1
-
-      # Copy ssh public key to the container
-      cat ~/.ssh/id_rsa.pub | lxc exec ${CONTAINER_NAME} -- dd of=/root/.ssh/authorized_keys
-
-      # Set correct permissions on the authorized_keys file
-      lxc exec ${CONTAINER_NAME} -- chmod 600 /root/.ssh/authorized_keys || exit -1
-
-  else
-      # There is no IMAGE defined
-      echo 'ERROR: IMAGE variable is not defined!'
-      exit -1
-  fi
-script:
-# Download depended roles
-- if [ -f tests/requirements.yml ]; then ansible-galaxy install -r tests/requirements.yml; fi
-
-# Basic role syntax check
-- ansible-lint tests/test.yml
-- ansible-review tests/test.yml
-- ansible-playbook -i tests/inventory --syntax-check tests/test.yml
-
-# Run the role/playbook with ansible-playbook
-- ansible-playbook -i tests/inventory --become -vvvv -u root -l ${CONTAINER_NAME} tests/test.yml
-
-# Run the role/playbook again, checking to make sure it's idempotent
-- >
-  ansible-playbook -i tests/inventory --become -vvvv -u root -l ${CONTAINER_NAME} tests/test.yml
-  | grep -q 'changed=0.*failed=0'
-  && (echo 'Idempotence test: pass' && exit 0)
-  || (echo 'Idempotence test: fail' && exit 1)
-
-after_script:
-# Delete the LXD container
-- if [ ! -z ${IMAGE} ]; then
-      sudo su travis -c 'lxc delete --force ${IMAGE} ${CONTAINER_NAME}';
-  fi
-
-notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  script:
+    # Download depended roles
+    - if [ -f tests/requirements.yml ]; then ansible-galaxy install -r tests/requirements.yml; fi
+    
+    # Basic role syntax check
+    - ansible-lint tests/test.yml
+    - ansible-review tests/test.yml
+    - ansible-playbook -i tests/inventory --syntax-check tests/test.yml
+    
+    # Run the role/playbook with ansible-playbook
+    - ansible-playbook -i tests/inventory --become -vvvv -u root -l ${CONTAINER_NAME} tests/test.yml
+    
+    # Run the role/playbook again, checking to make sure it's idempotent
+    - >
+      ansible-playbook -i tests/inventory --become -vvvv -u root -l ${CONTAINER_NAME} tests/test.yml
+      | grep -q 'changed=0.*failed=0'
+      && (echo 'Idempotence test: pass' && exit 0)
+      || (echo 'Idempotence test: fail' && exit 1)
+    
+  after_script:
+    # Delete the LXD container
+    - if [ ! -z ${IMAGE} ]; then
+          sudo su travis -c 'lxc delete --force ${IMAGE} ${CONTAINER_NAME}';
+      fi
+  
+  notifications:
+    webhooks: https://galaxy.ansible.com/api/v1/notifications/
 ...
