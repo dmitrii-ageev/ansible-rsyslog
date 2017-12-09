@@ -3,8 +3,10 @@
   python: "2.7"
 
   env:
-    - IMAGE=ubuntu/xenial ANSIBLE_VERSION=2.4.0.0
-    - IMAGE=ubuntu/xenial ANSIBLE_VERSION=latest
+    - DISTRUBUTION=Ubuntu VERSION=xenial ANSIBLE_VERSION=2.4.0.0
+    - DISTRUBUTION=Ubuntu VERSION=xenial ANSIBLE_VERSION=latest
+    - DISTRUBUTION=CentOS VERSION=7      ANSIBLE_VERSION=2.4.0.0
+    - DISTRUBUTION=CentOS VERSION=7      ANSIBLE_VERSION=latest
 
   before_install:
     - ssh-keygen -f ~/.ssh/id_rsa -P ''
@@ -31,9 +33,7 @@
 
     # Install ansible-lint
     - pip install ansible-lint
-
-    # Install ansible-review
-    - pip install ansible-review
+# Install ansible-review - pip install ansible-review
 
     # Create ansible.cfg with correct roles_path
     - echo '[defaults]'        > ansible.cfg
@@ -50,8 +50,9 @@
     # Create a LXD container
     - >
       if [ ! -z ${IMAGE} ]; then
+          export IMAGE=$(echo "${DISTRIBUTION}/${VERSION}" | tr '[:upper:]' '[:lower:]')
           export CONTAINER_NAME=lxc${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
-          sudo su travis -c "lxc launch images:${IMAGE} ${CONTAINER_NAME}";
+          sudo su travis -c "lxc launch images:${IMAGE} ${CONTAINER_NAME}"
 
           # Wait for 5 seconds until DHCP assigns for IP address
           sleep 5
@@ -71,13 +72,21 @@
             echo ${CONTAINER_ADDRESS} >> tests/inventory
           fi
 
-          # Install openssh-server in the container
-          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install openssh-server -y"
+          # Install openssh-server and python in the container
+          case ${DISTRIBUTION} in
+          'Ubuntu'|'Debian')
+              sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install openssh-server python2.7 -y"
+              ;;
+          'CentOS'|'RedHat')
+              sudo su travis -c "lxc exec ${CONTAINER_NAME} -- yum install openssh-server python2.7 -y"
+              ;;
+          *)
+              echo 'Invalid distribution name: ${DISTRIBUTION}'
+              exit -1
+              ;;
+          esac
 
-          # Install python in the container
-          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install python2.7 -y"
- 
-          # Update python alternatives
+          # Create a symlink for python
           sudo su travis -c "lxc exec ${CONTAINER_NAME} -- ln -fs /usr/bin/python2.7 /usr/bin/python"
 
           # Make ssh keys directory inside the container
@@ -115,12 +124,12 @@
       ansible-playbook -i tests/inventory --become --diff -vv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
       | grep -q 'changed=0.*failed=0'
       && (echo 'Idempotence test: pass' && exit 0)
-      || (echo 'Idempotence test: fail' && exit 1)
+      || (echo 'Idempotence test: fail' && exit -1)
 
   after_script:
     # Delete the LXD container
-    #- if [ ! -z ${IMAGE} ]; then sudo su travis -c 'lxc delete --force ${CONTAINER_NAME}' || exit 0; fi
+    - if [ ! -z ${IMAGE} ]; then sudo su travis -c "lxc delete --force ${CONTAINER_NAME}"; fi
 
-  notifications:
-    webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  #notifications:
+  #  webhooks: https://galaxy.ansible.com/api/v1/notifications/
 ...
