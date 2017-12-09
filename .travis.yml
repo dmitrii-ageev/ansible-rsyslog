@@ -3,10 +3,10 @@
   python: "2.7"
 
   env:
-    - DISTRUBUTION=Ubuntu VERSION=xenial ANSIBLE_VERSION=2.4.0.0
-    - DISTRUBUTION=Ubuntu VERSION=xenial ANSIBLE_VERSION=latest
-    - DISTRUBUTION=CentOS VERSION=7      ANSIBLE_VERSION=2.4.0.0
-    - DISTRUBUTION=CentOS VERSION=7      ANSIBLE_VERSION=latest
+    - DISTRIBUTION=Ubuntu VERSION=xenial ANSIBLE_VERSION=2.4.0.0
+    - DISTRIBUTION=Ubuntu VERSION=xenial ANSIBLE_VERSION=latest
+    - DISTRIBUTION=CentOS VERSION=7      ANSIBLE_VERSION=2.4.0.0
+    - DISTRIBUTION=CentOS VERSION=7      ANSIBLE_VERSION=latest
 
   before_install:
     - ssh-keygen -f ~/.ssh/id_rsa -P ''
