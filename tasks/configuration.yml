@@ -12,7 +12,7 @@
 - name: Create dynamic configuration files
   template:
     src: rsyslog.d.j2
-    dest: "{{ rsyslog__dynamic_conf_dir }}/{{ item.file }}"
+    dest: "{{ rsyslog__dynamic_conf_dir }}/{{ item.name }}"
     mode: "{{ rsyslog__file_mode }}"
   when: item is defined
   with_items: "{{ rsyslog__dynamic_config }}"
