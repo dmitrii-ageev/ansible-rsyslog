@@ -93,7 +93,7 @@ rsyslog__default_config:
 - name: "50-default.conf"
   config:
   - comment: "First some standard log files. Log by facility."
-    options: |-
+    options: |
       auth,authpriv.*                           /var/log/auth.log
       *.*;auth,authpriv.none                    -/var/log/syslog
       *.info;mail.none;authpriv.none;cron.none  -/var/log/messages
@@ -103,19 +103,19 @@ rsyslog__default_config:
       lpr.*                                     -/var/log/lpr.log
       mail.*                                    -/var/log/mail.log
   - comment: "Logging for the mail system."
-    options: |-
+    options: |
       mail.info                                 -/var/log/mail.info
       mail.warn                                 -/var/log/mail.warn
       mail.err                                  -/var/log/mail.err
   - comment: "Everybody gets emergency messages."
-    options: |-
-      *.emerg                         *
+    options: |
+      *.emerg                                   *
   - comment: "Logging to the console."
-    options: |-
+    options: |
       daemon.*;mail.*;\
               news.err;\
               *.=debug;*.=info;\
-              *.=notice;*.=warn       |/dev/console
+              *.=notice;*.=warn                 |/dev/console
 
 # GENERATE DYNAMIC CONFIG
 rsyslog__dynamic_config: "{{ rsyslog__default_config + rsyslog__config|d([]) }}"
