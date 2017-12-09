@@ -49,7 +49,7 @@
   before_script:
     # Create a LXD container
     - >
-      if [ ! -z ${IMAGE} ]; then
+      if [ ! -z ${DISTRIBUTION} ]; then
           export IMAGE=$(echo "${DISTRIBUTION}/${VERSION}" | tr '[:upper:]' '[:lower:]')
           export CONTAINER_NAME=lxc${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
           sudo su travis -c "lxc launch images:${IMAGE} ${CONTAINER_NAME}"
