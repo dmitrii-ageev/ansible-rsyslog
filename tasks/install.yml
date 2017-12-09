@@ -5,7 +5,7 @@
     state: present
   when: item is defined
   with_items: "{{ rsyslog__packages[ansible_distribution][ansible_distribution_major_version|int]['required_packages'] }}"
-  notify: Restart cron service
+  notify: Restart rsyslog service
 
 - name: Install main packages
   package:
@@ -13,7 +13,7 @@
     state: present
   when: item is defined
   with_items: "{{ rsyslog__packages[ansible_distribution][ansible_distribution_major_version|int]['packages'] }}"
-  notify: Restart cron service
+  notify: Restart rsyslog service
 
 - name: Create the application folder set
   file:
