@@ -111,6 +111,7 @@
     - ansible-playbook -i tests/inventory --become --diff -vvvv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
 
     # Run the role/playbook again, checking to make sure it's idempotent
+    - ansible-playbook -i tests/inventory --become --diff -vvvv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
     - >
       ansible-playbook -i tests/inventory --become --diff -vvvv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
       | grep -q 'changed=0.*failed=0'
@@ -119,7 +120,7 @@
 
   after_script:
     # Delete the LXD container
-    - if [ ! -z ${IMAGE} ]; then sudo su travis -c 'lxc delete --force ${IMAGE} ${CONTAINER_NAME}'; fi
+    - if [ ! -z ${IMAGE} ]; then sudo su travis -c 'lxc delete --force ${CONTAINER_NAME}'; fi
 
   notifications:
     webhooks: https://galaxy.ansible.com/api/v1/notifications/
