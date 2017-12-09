@@ -33,7 +33,9 @@
 
     # Install ansible-lint
     - pip install ansible-lint
-# Install ansible-review - pip install ansible-review
+
+    # Install ansible-review
+    - pip install ansible-review
 
     # Create ansible.cfg with correct roles_path
     - echo '[defaults]'        > ansible.cfg
