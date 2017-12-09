@@ -91,9 +91,6 @@
           # Start OpenSSH
           sudo su travis -c "lxc exec ${CONTAINER_NAME} -- systemctl start sshd"
 
-          # Create a symlink for python
-          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- ln -fs /usr/bin/python2.7 /usr/bin/python"
-
           # Make ssh keys directory inside the container
           sudo su travis -c "lxc exec ${CONTAINER_NAME} -- mkdir -p -m 700 /root/.ssh"
 
@@ -102,6 +99,9 @@
 
           # Set correct permissions on the authorized_keys file
           sudo su travis -c "lxc exec ${CONTAINER_NAME} -- chmod 600 /root/.ssh/authorized_keys"
+
+          # Create a symlink for python
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- ln -fs /usr/bin/python2.7 /usr/bin/python"
 
       else
           # There is no IMAGE defined
