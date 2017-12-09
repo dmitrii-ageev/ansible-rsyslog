@@ -72,7 +72,10 @@
           sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install openssh-server -y" || exit -1
 
           # Install python in the container
-          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install python2.7 -y" || exit -1
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install python python2.7 -y" || exit -1
+ 
+          # Update alternatives
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1"
 
           # Make ssh keys directory inside the container
           sudo su travis -c "lxc exec ${CONTAINER_NAME} -- mkdir -p -m 700 /root/.ssh" || exit -1
