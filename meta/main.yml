@@ -15,7 +15,7 @@ galaxy_info:
      versions:
        - stretch
   galaxy_tags:
-    - rsyslog 
+    - rsyslog
     - system
     - centos
     - ubuntu
