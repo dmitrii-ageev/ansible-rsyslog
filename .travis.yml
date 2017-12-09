@@ -37,8 +37,11 @@
 
     # Create ansible.cfg with correct roles_path
     - echo '[defaults]'        > ansible.cfg
+    # Define path to roles
     - echo 'roles_path = ../' >> ansible.cfg
+    # Disable host key checking
     - echo 'host_key_checking = False' >> ansible.cfg
+    # Set ssh connectivity options
     - echo '[ssh_connection]' >> ansible.cfg
     - echo 'ssh_args = -o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=10m' >> ansible.cfg
     - cat ansible.cfg
@@ -50,8 +53,8 @@
           export CONTAINER_NAME=lxc${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
           sudo su travis -c "lxc launch images:${IMAGE} ${CONTAINER_NAME}";
 
-          # Wait for 10 seconds until DHCP assigns for IP address
-          sleep 10
+          # Wait for 5 seconds until DHCP assigns for IP address
+          sleep 5
 
           # Display information about existing containers
           sudo su travis -c "lxc list"
@@ -72,9 +75,9 @@
           sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install openssh-server -y" || exit -1
 
           # Install python in the container
-          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install python python2.7 -y" || exit -1
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install python2.7 -y" || exit -1
  
-          # Update alternatives
+          # Update python alternatives
           sudo su travis -c "lxc exec ${CONTAINER_NAME} -- update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1"
 
           # Make ssh keys directory inside the container
