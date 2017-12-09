@@ -72,22 +72,22 @@
           fi
 
           # Install openssh-server in the container
-          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install openssh-server -y" || exit -1
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install openssh-server -y"
 
           # Install python in the container
-          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install python2.7 -y" || exit -1
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- apt install python2.7 -y"
  
           # Update python alternatives
-          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1"
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- ln -fs /usr/bin/python2.7 /usr/bin/python"
 
           # Make ssh keys directory inside the container
-          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- mkdir -p -m 700 /root/.ssh" || exit -1
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- mkdir -p -m 700 /root/.ssh"
 
           # Copy ssh public key to the container
           cat ~/.ssh/id_rsa.pub | sudo su travis -c "lxc exec ${CONTAINER_NAME} -- dd of=/root/.ssh/authorized_keys"
 
           # Set correct permissions on the authorized_keys file
-          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- chmod 600 /root/.ssh/authorized_keys" || exit -1
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- chmod 600 /root/.ssh/authorized_keys"
 
       else
           # There is no IMAGE defined
@@ -111,7 +111,6 @@
     - ansible-playbook -i tests/inventory --become --diff -vv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
 
     # Run the role/playbook again, checking to make sure it's idempotent
-    - ansible-playbook -i tests/inventory --become --diff -vv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
     - >
       ansible-playbook -i tests/inventory --become --diff -vv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
       | grep -q 'changed=0.*failed=0'
@@ -120,7 +119,7 @@
 
   after_script:
     # Delete the LXD container
-    - if [ ! -z ${IMAGE} ]; then sudo su travis -c 'lxc delete --force ${CONTAINER_NAME}' || exit 0; fi
+    #- if [ ! -z ${IMAGE} ]; then sudo su travis -c 'lxc delete --force ${CONTAINER_NAME}' || exit 0; fi
 
   notifications:
     webhooks: https://galaxy.ansible.com/api/v1/notifications/
