@@ -16,4 +16,5 @@
     mode: "{{ rsyslog__file_mode }}"
   when: item is defined
   with_items: "{{ rsyslog__dynamic_config }}"
+  notify: Restart rsyslog service
 ...
