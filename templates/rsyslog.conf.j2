@@ -14,7 +14,7 @@
 #### MODULES ####
 
 {% for module in rsyslog__modules %}
-$ModLoad {{ module.name }} # {{ module.description }}
+$ModLoad {{ module.name }} {{ '# '+module.description if module.description is defined else '' }}
 {%   if module.options is defined %}
 {%     if module.options is iterable %}
 {%       for key,value in module.options.items() %}
