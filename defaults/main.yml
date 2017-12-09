@@ -113,9 +113,9 @@ rsyslog__default_config:
   - comment: "Logging to the console."
     options: |
       daemon.*;mail.*;\
-              news.err;\
-              *.=debug;*.=info;\
-              *.=notice;*.=warn                 |/dev/console
+               news.err;\
+               *.=debug;*.=info;\
+               *.=notice;*.=warn                |/dev/console
 
 # GENERATE DYNAMIC CONFIG
 rsyslog__dynamic_config: "{{ rsyslog__default_config + rsyslog__config|d([]) }}"
