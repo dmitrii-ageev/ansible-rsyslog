@@ -7,12 +7,13 @@
 {%       endif %}
 {%       if element.options is defined %}
 {{         element.options }}
-
 {%       endif %}
+{%       for key,value in element.items() %}
+{{         key }} {{ value }}
+{%       endfor %}
 {%     endif %}
 {%   elif element is string %}
 {{     element }}
-
 {%   elif element is iterable %}
 {%     for item in element %}
 {{       print_config(item) -}}
