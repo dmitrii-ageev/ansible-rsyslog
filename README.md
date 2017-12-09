@@ -8,11 +8,6 @@ Requirements
 
 This role requires root access.
 
-Dependencies
-------------
-
-None.
-
 Role Variables
 --------------
 
@@ -75,4 +70,3 @@ Author Information
 ------------------
 
 Dmitrii Ageev <dageev@gmail.com>
-
