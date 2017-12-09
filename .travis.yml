@@ -54,8 +54,8 @@
           export CONTAINER_NAME=lxc${TRAVIS_BUILD_NUMBER}${TRAVIS_BUILD_ID}
           sudo su travis -c "lxc launch images:${IMAGE} ${CONTAINER_NAME}"
 
-          # Wait for 5 seconds until DHCP assigns for IP address
-          sleep 5
+          # Wait for 10 seconds until DHCP assigns for IP address
+          sleep 10
 
           # Display information about existing containers
           sudo su travis -c "lxc list"
@@ -100,7 +100,7 @@
 
       else
           # There is no IMAGE defined
-          echo 'ERROR: IMAGE variable is not defined!'
+          echo 'ERROR: DISTRIBUTION variable is not defined!'
           exit -1
       fi
 
@@ -130,6 +130,6 @@
     # Delete the LXD container
     - if [ ! -z ${IMAGE} ]; then sudo su travis -c "lxc delete --force ${CONTAINER_NAME}"; fi
 
-  #notifications:
-  #  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  notifications:
+    webhooks: https://galaxy.ansible.com/api/v1/notifications/
 ...
