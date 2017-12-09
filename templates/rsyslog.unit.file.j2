@@ -12,9 +12,9 @@ Documentation=man:rsyslogd(8)
 Documentation=http://www.rsyslog.com/doc/
 
 [Service]
-Type=forking
-PIDFile={{ rsyslog__pid_file }}
+Type=notify
 EnvironmentFile=-{{ rsyslog__environment_file }}
+PIDFile={{ rsyslog__pid_file }}
 ExecStartPre=/bin/rm -f {{ rsyslog__pid_file }}
 ExecStart={{ rsyslog__daemon_file }} -n $OPTIONS
 ExecReload=/bin/kill -HUP $PIDFile
@@ -22,6 +22,7 @@ Restart=always
 KillMode=process
 TimeoutSec=30
 StandardOutput=null
+UMask=0066
 
 [Install]
 WantedBy=multi-user.target
