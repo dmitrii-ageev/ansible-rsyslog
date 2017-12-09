@@ -108,12 +108,12 @@
     - ansible-playbook -i tests/inventory --syntax-check tests/test.yml
 
     # Run the role/playbook with ansible-playbook
-    - ansible-playbook -i tests/inventory --become --diff -vvvv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
+    - ansible-playbook -i tests/inventory --become --diff -vv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
 
     # Run the role/playbook again, checking to make sure it's idempotent
-    - ansible-playbook -i tests/inventory --become --diff -vvvv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
+    - ansible-playbook -i tests/inventory --become --diff -vv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
     - >
-      ansible-playbook -i tests/inventory --become --diff -vvvv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
+      ansible-playbook -i tests/inventory --become --diff -vv -u root -l ${CONTAINER_ADDRESS} tests/test.yml
       | grep -q 'changed=0.*failed=0'
       && (echo 'Idempotence test: pass' && exit 0)
       || (echo 'Idempotence test: fail' && exit 1)
