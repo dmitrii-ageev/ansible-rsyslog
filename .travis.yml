@@ -88,6 +88,9 @@
               ;;
           esac
 
+          # Start OpenSSH
+          sudo su travis -c "lxc exec ${CONTAINER_NAME} -- systemctl start sshd"
+
           # Create a symlink for python
           sudo su travis -c "lxc exec ${CONTAINER_NAME} -- ln -fs /usr/bin/python2.7 /usr/bin/python"
 
