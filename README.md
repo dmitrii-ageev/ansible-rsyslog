@@ -49,7 +49,7 @@ Example Playbook
     rsyslog__modules:
     - comment: This sets up a TCP server on port 514 and permits 500 connections
       name: imtcp
-      options: |-
+      options: |
         $InputTCPServerRun 514
         $InputTCPMaxSessions 500
 
@@ -57,10 +57,10 @@ Example Playbook
     - file: "99-iptables.conf"
       config:
       - comment: "This sends firewall messages to the iptables.log."
-        options: |-
+        options: |
           :msg, regex,  "^\[ *[0-9]*\.[0-9]*\] IPT"  -/var/log/iptables.log
       - comment: "Logging for the INND system."
-        options: |-
+        options: |
           news.crit                                   /var/log/news/news.crit
           news.err                                    /var/log/news/news.err
           news.notice                                -/var/log/news/news.notice
