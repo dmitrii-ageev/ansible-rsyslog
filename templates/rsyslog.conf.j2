@@ -5,17 +5,16 @@
 # If you experience problems, see http://www.rsyslog.com/doc/troubleshoot.html
 #
 #
-# As a fall-out from the above and my attempts to filter certain message type ... 
-# uncomment the line under this commenti and restart rsyslog  to get very 
-# valuable *** D E B U G *** information in a seperate file 
+# As a fall-out from the above and my attempts to filter certain message type ...
+# uncomment the line under this commenti and restart rsyslog  to get very
+# valuable *** D E B U G *** information in a seperate file
 #/var/log/properties.log;RSYSLOG_DebugFormat
 
 
 #### MODULES ####
-
 {% for module in rsyslog__modules %}
-{{ module.description | default(module.name) | comment }}
-$ModLoad {{ module.name }} 
+{{ module.description | default('Module: '+module.name) | comment }}
+$ModLoad {{ module.name }}
 {%   if module.options is defined %}
 {%     if module.options is mapping %}
 {%       for key,value in module.options.items() %}
@@ -29,6 +28,7 @@ $ModLoad {{ module.name }}
 {{       module.options }}
 {%     endif %}
 {%   endif %}
+
 {% endfor %}
 
 #### GLOBAL DIRECTIVES ####
