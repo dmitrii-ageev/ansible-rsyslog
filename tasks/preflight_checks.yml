@@ -1,34 +1,35 @@
 ---
 - name: Check if we support the OS distribution
-  fail:
+  assert:
+    that:
+      - ansible_distribution not in rsyslog__packages
     msg: "The {{ ansible_distribution }} operating system is not supported!"
-  when: not ansible_distribution in rsyslog__packages
 
 - name: Check if we support the RedHat version
-  fail:
+  assert:
+    that:
+      - ansible_distribution == "RedHat"
+      - ansible_distribution_major_version|int not in rsyslog__packages.RedHat
     msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
-  when:
-  - ansible_distribution == "RedHat"
-  - not ansible_distribution_major_version|int in rsyslog__packages.RedHat
 
 - name: Check if we support the CentOS version
-  fail:
+  assert:
+    that:
+      - ansible_distribution == "CentOS"
+      - ansible_distribution_major_version|int not in rsyslog__packages.CentOS
     msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
-  when:
-  - ansible_distribution == "CentOS"
-  - not ansible_distribution_major_version|int in rsyslog__packages.CentOS
 
 - name: Check if we support the Debian version
-  fail:
+  assert:
+    that:
+      - ansible_distribution == "Debian"
+      - ansible_distribution_major_version|int not in rsyslog__packages.Debian
     msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
-  when:
-  - ansible_distribution == "Debian"
-  - not ansible_distribution_major_version|int in rsyslog__packages.Debian
 
 - name: Check if we support the Ubuntu version
-  fail:
+  assert:
+    that:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_major_version|int not in rsyslog__packages.Ubuntu
     msg: "The {{ ansible_distribution }} version {{ ansible_distribution_major_version }} is not supported!"
-  when:
-  - ansible_distribution == "Ubuntu"
-  - not ansible_distribution_major_version|int in rsyslog__packages.Ubuntu
 ...
