@@ -16,7 +16,7 @@ This roles comes preloaded with everything required by default. See the annotate
 rsyslog__modules: A list of dictionaries. Defines a list of rsyslog modules.
 Key-value pairs:
  * name    - The name of a module.
- * comment - Description of the module.
+ * comment - Optional. Description of the module.
  * options - Configuration for the module.
 
 rsyslog__config: A list of dictionaries. Defines rsyslog configuration files and their options.
@@ -25,7 +25,7 @@ Key-value pairs:
  * config  - Array of configuration sections (refer to the section structure below).
 
 The configuration section structure:
- * comment  - Description for a particular section.
+ * comment  - Optional. Provide a description for a particular section.
  * options  - Directives for rsyslog, view the rsyslog man page for specifics.
 
 Example Playbook
