@@ -95,5 +95,5 @@ rsyslog__default_config:
                    *.=notice;*.=warn                |/dev/console
 
 # GENERATE DYNAMIC CONFIG
-rsyslog__dynamic_config: "{{ rsyslog__default_config + rsyslog__config|d([]) }}"
+rsyslog__dynamic_config: "{{ rsyslog__default_config + rsyslog__config | default([]) }}"
 ...
