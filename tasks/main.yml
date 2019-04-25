@@ -11,5 +11,5 @@
   - include_tasks: stop.yml
   - include_tasks: deconfiguration.yml
   - include_tasks: uninstall.yml
-  when: rsyslog__state == "absent"
+  when: rsyslog__state != "present"
 ...
