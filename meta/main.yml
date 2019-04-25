@@ -2,13 +2,14 @@
 galaxy_info:
   author: dmitrii-ageev
   role_name: rsyslog
+  description: This role for deploying and configuring RSYSLOG log processing server.
   company: DevOps Engineering Ltd.
   license: GNU General Public License v2.0
   min_ansible_version: 2.4
   platforms:
-   - name: EL
-     versions:
-       - 7
+    - name: EL
+      versions:
+        - 7
   galaxy_tags:
     - rsyslog
     - centos
