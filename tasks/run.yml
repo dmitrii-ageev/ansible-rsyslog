@@ -12,6 +12,6 @@
     dest: "{{ rsyslog__system_unit_file }}"
     mode: "{{ rsyslog__file_mode }}"
   notify:
-  - Reload systemd configuration
-  - Restart rsyslog service
+    - Reload systemd configuration
+    - Restart rsyslog service
 ...

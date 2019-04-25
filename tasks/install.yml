@@ -1,18 +1,9 @@
 ---
-- name: Install required packages
+- name: Install {{ rsyslog__service }} packages
   package:
     name: "{{ item }}"
     state: present
-  when: item is defined
-  with_items: "{{ rsyslog__packages[ansible_distribution][ansible_distribution_major_version|int]['required_packages'] }}"
-  notify: Restart rsyslog service
-
-- name: Install main packages
-  package:
-    name: "{{ item }}"
-    state: present
-  when: item is defined
-  with_items: "{{ rsyslog__packages[ansible_distribution][ansible_distribution_major_version|int]['packages'] }}"
+  loop: "{{ rsyslog__packages | default([]) | flatten(levels=1) }}"
   notify: Restart rsyslog service
 
 - name: Create the application folder set
@@ -22,6 +13,5 @@
     owner: "{{ rsyslog__user }}"
     group: "{{ rsyslog__group }}"
     mode: "{{ rsyslog__dir_mode }}"
-  when: item is defined
-  with_items: "{{ rsyslog__directories }}"
+  loop: "{{ rsyslog__directories | default([]) | flatten(levels=1) }}"
 ...
