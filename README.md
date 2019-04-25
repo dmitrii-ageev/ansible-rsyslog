@@ -23,6 +23,7 @@ rsyslog__config: A list of dictionaries. Defines rsyslog configuration files and
 Key-value pairs:
  * name    - The name of the file that goes into /etc/rsyslog.d/.
  * config  - Array of configuration sections (refer to the section structure below).
+ * absent  - Optional. If set the file will be removed.
 
 The configuration section structure:
  * comment  - Optional. Provide a description for a particular section.
@@ -37,7 +38,7 @@ Example Playbook
 #
 - name: Change rsyslog settings
   hosts: host.domain.net
-  become: yes
+  become: true
 
   roles:
   - role: rsyslog
@@ -69,4 +70,4 @@ GNU General Public License v2.0
 Author Information
 ------------------
 
-Dmitrii Ageev <dageev@gmail.com>
+Dmitrii Ageev <d.ageev@gmail.com>
