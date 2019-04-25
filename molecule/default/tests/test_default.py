@@ -31,7 +31,10 @@ def test_rsyslog_configuration(host):
 
     # This file should present in the system
     conf_file = host.file('/etc/rsyslog.d/10-stunnel.conf')
-    assert conf_file.exists
+    assert conf_file.exists, 'The 10-stunnel.conf file should be created.'
     assert conf_file.user == 'root'
     assert conf_file.group == 'root'
     assert conf_file.mode == 0o644
+
+    listen_file = host.file('/etc/rsyslog.d/listen.conf')
+    assert not listen_file.exists, 'The listen.conf file should be removed.'

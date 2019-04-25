@@ -4,9 +4,11 @@
   roles:
     - role: dmitrii-ageev.rsyslog
       rsyslog__default_config:
-        - name: "10-stunnel.conf"
+        - name: 10-stunnel.conf
           config:
             - comment: "Example settings."
               options: |-
                 :syslogtag, contains, "stunnel"                   /var/log/stunnel4/stunnel.log
                 & stop
+        - name: listen.conf
+          absent: true
