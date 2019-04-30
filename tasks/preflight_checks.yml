@@ -1,5 +1,5 @@
 ---
-- name: Check if we support the OS distribution
+- name: Check if we support the OS family
   assert:
     that:  ansible_os_family == "RedHat"
 ...
